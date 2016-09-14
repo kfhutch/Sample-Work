@@ -1,0 +1,62 @@
+def possibles(puzzle,y,x):
+    '''Takes current puzzle and location, returns possible values'''
+    
+    z = [1,2,3,4,5,6,7,8,9]
+    
+    # Horizontal Reduce
+    for i in puzzle[y]:
+        if i in z and type(i) is int:
+            z.remove(i)
+    
+    # Vertical Reduce
+    for j in [puzzle[a][x] for a in range(9)]:
+        if j in z and type(j) is int:
+            z.remove(j)
+    
+    # Block Reduce
+    yy = int(y//3)
+    xx = int(x//3)
+    block = puzzle[yy*3][xx*3:xx*3+3] + puzzle[yy*3+1][xx*3:xx*3+3] + puzzle[yy*3+2][xx*3:xx*3+3]
+    for k in block:
+        if k in z and type(k) is int:
+            z.remove(k)
+    
+    # Convert list to int if one possible
+    if len(z) == 1:
+        return(int(z[0]))
+    return z
+
+def sudoku(puzzle):
+    """return the solved puzzle as a 2d array of 9 x 9"""
+    
+    solution_test = True
+    
+    # Start at first row first column
+    x = 0
+    y = 0
+        
+    while solution_test:
+        
+        # Run 'Possibles' Function on current cell if not determined
+        if puzzle[y][x] == 0 or type(puzzle[y][x]) is list:
+            puzzle[y][x] = possibles(puzzle,y,x)    
+        
+        # Move to next cell and loop
+        x += 1
+        if x == 9:
+            y += 1
+            x = 0
+        if y == 9:
+            y = 0
+        
+        # Puzzle solved test
+        test_list = []
+        for line in puzzle:
+            test_list += line
+        if 0 not in test_list:
+            solution_test = False
+            for cell in test_list:
+                if type(cell) is list:
+                    solution_test = True
+    
+    return puzzle
